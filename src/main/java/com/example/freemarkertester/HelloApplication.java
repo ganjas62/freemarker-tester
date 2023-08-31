@@ -14,7 +14,7 @@ public class HelloApplication extends Application {
     URL resource = HelloApplication.class.getResource("hello-view.fxml");
     System.out.println(resource);
     FXMLLoader fxmlLoader = new FXMLLoader(resource);
-    Scene scene = new Scene(fxmlLoader.load(), 600, 500);
+    Scene scene = new Scene(fxmlLoader.load(), 900, 500);
     HelloController helloController = fxmlLoader.getController();
     helloController.setStage(stage);
     stage.setTitle("Freemarker Tester");
