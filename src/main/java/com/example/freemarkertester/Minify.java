@@ -72,7 +72,7 @@ public class Minify {
   private int column;
   private int afterIf = -1;
 
-  public static enum Action {
+  public enum Action {
     OUTPUT_CURR, DELETE_CURR, DELETE_NEXT
   }
 

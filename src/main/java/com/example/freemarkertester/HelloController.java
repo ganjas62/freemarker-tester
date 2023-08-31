@@ -102,9 +102,11 @@ public class HelloController {
       textAreaResult.setText(result);
       validateJson(result);
     } catch (ParseException e) {
-      handleTemplateError("There's an exception when parsing template", e.getColumnNumber(), e);
+      handleParsingError(e);
     } catch (TemplateException e) {
-      handleTemplateError("There's an exception when processing template", e.getColumnNumber(), e);
+      executeResultLabel.setText("There's an exception when processing template");
+      executeResultLabel.setTextFill(Paint.valueOf("red"));
+      handleException(e);
     } catch (Exception e) {
       executeResultLabel.setText("There's an exception");
       executeResultLabel.setTextFill(Paint.valueOf("red"));
@@ -112,12 +114,29 @@ public class HelloController {
     }
   }
 
-  private void handleTemplateError(String message, int columNumber, Exception e) {
-    executeResultLabel.setText(message);
+  private void handleParsingError(ParseException e) {
+    executeResultLabel.setText("There's an exception when parsing template");
     executeResultLabel.setTextFill(Paint.valueOf("red"));
     handleException(e);
     textAreaTemplate.requestFocus();
-    textAreaTemplate.positionCaret(columNumber);
+    textAreaTemplate.positionCaret(calculateColumnNumber(e.getColumnNumber(), e.getLineNumber(),
+        textAreaTemplate.getText()));
+  }
+
+  private int calculateColumnNumber(int columnNumber, int rowNumber, String source) {
+    int result = 0;
+    for (int i = 1; i < rowNumber; i++) {
+      char currentChar = source.charAt(result);
+      while (currentChar != '\r' && currentChar != '\n') {
+        result++;
+        currentChar = source.charAt(result);
+      }
+      result++;
+      if (source.charAt(result) == '\n') {
+        result++;
+      }
+    }
+    return result + columnNumber;
   }
 
   private void validateJson(String json) {
