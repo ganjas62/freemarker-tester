@@ -1,5 +1,6 @@
 package com.example.freemarkertester;
 
+import com.alibaba.fastjson2.JSON;
 import freemarker.core.ParseException;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -16,8 +17,6 @@ import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.text.StringEscapeUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,7 +96,7 @@ public class HelloController {
     try {
       StringWriter stringWriter = new StringWriter();
       Template template = freeMarkerTemplate.getTemplate(textAreaTemplate.getText());
-      template.process(new JSONObject(textAreaPayload.getText()), stringWriter);
+      template.process(JSON.parse(textAreaPayload.getText()), stringWriter);
       String result = stringWriter.toString();
       textAreaResult.setText(result);
       validateJson(result);
@@ -140,11 +139,10 @@ public class HelloController {
   }
 
   private void validateJson(String json) {
-    try {
-      new JSONObject(json);
+    if (JSON.isValid(json)) {
       executeResultLabel.setText("Json result is valid");
       executeResultLabel.setTextFill(Paint.valueOf("green"));
-    } catch (JSONException e) {
+    } else {
       executeResultLabel.setText("Json result is not valid");
       executeResultLabel.setTextFill(Paint.valueOf("red"));
     }
